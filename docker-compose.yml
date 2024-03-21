@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:alpine
+    shm_size: 128mb
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: links
+      POSTGRES_USER: go
+      POSTGRES_PASSWORD: go
+
+  kv:
+    image: redis:alpine
+    ports:
+      - 6379:6379

@@ -1,0 +1,63 @@
+{{ template "header.html" . }}
+
+<div class="px-6 py-12 lg:px-8 flex flex-col container">
+  <div class="flex gap-12">
+    <form action="/private/link" method="POST" class="flex-1 flex flex-col gap-3 min-w-fit">
+      <input name="_csrf" type="hidden" value="{{ .csrf }}" />
+      <div class="flex gap-3">
+        <input name="link" placeholder="Insert your link here" class="basis-3/4 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        <button class="max-w-fit flex justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+          create
+        </button>
+      </div>
+      {{ if .errors }}
+        <div>
+          {{ range .errors }}
+            <div class="text-red-700">{{ . }}</div>
+          {{ end }}
+        </div>
+      {{ end }}
+    </form>
+    <form action="/logout" method="POST">
+      <input name="_csrf" type="hidden" value="{{ .csrf }}" />
+      <button class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        logout
+      </button>
+    </form>
+  </div>
+  {{ if .links }}
+    <table>
+      <tr>
+        <th>original link</th>
+        <th>short link</th>
+        <th>created at</th>
+        <th>hits</th>
+        <th></th>
+      </tr>
+      {{ range .links }}
+        <tr>
+          <td>
+            <a href="{{ .Link }}" target="_blank" class="text-blue-600 hover:text-blue-500">
+              {{ .Link }}
+            </a>
+          </td>
+          <td>{{ $.baseURL }}/{{ .Hash }}</td>
+          <td>{{ .CreatedAt | formatTime }}</td>
+          <td>{{ .Count }}</td>
+          <td>
+            <form action="/private/link/{{ .Hash }}/delete" method="POST">
+              <input name="_csrf" type="hidden" value="{{ $.csrf }}" />
+              <button class="flex w-full justify-center rounded-md bg-gray-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400">
+                delete
+              </button>
+            </form>
+          </td>
+        </tr>
+      {{ end }}
+    </table>
+  {{ else }}
+    <div>There are no active links yet. Add new one with form above</div>
+  {{ end }}
+</div>
+
+{{ template "footer.html" . }}
