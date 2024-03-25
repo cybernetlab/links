@@ -15,6 +15,10 @@ func main() {
 		cmd.CreateUser(os.Args[2], os.Args[3])
 		return
 	}
+	address := os.Getenv("SERVER_LISTEN_ADDRESS")
+	if address == "" && gin.Mode() == gin.DebugMode {
+		address = "127.0.0.1:4000"
+	}
 
 	models.Setup()
 
@@ -26,5 +30,5 @@ func main() {
 	{
 		apiRouter.POST("/link", api.CreateLink)
 	}
-	router.Run("127.0.0.1:4000")
+	router.Run(address)
 }
